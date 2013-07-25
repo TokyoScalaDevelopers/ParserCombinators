@@ -4,6 +4,9 @@ import scala.util.parsing.combinator.RegexParsers
 
 case class Element(tag: String, attrs: Map[String, String] = Map(), content: List[Element] = List())
 
+// Here's our pretty basic XML parser! It supports nested elements, elements with attributes, and escaped quotes in attributes.
+// We heavily rely on the method ```implicit def regex(r: Regex): Parser[String]```, which converts all bare regular expressions
+// into Parser[String]s.
 object XMLParser extends RegexParsers {
     val identifier = "[a-zA-Z0-9]+".r
 
@@ -18,12 +21,17 @@ object XMLParser extends RegexParsers {
         case attrs => attrs.toMap
     }
 
+    // <foo attr="val" attr2="escaped \"quotes\"" />
     val selfclosingtag = "<" ~> (identifier ~ attributes) <~ ( "/" ~ ">") ^^ {
         case identifier ~ attrs => Element(identifier, attrs)
     }
+
+    // <foo attr="val">
     val opentag =  "<" ~> (identifier ~ attributes) <~ ">" ^^ {
         case identifier ~ attrs => Element(identifier, attrs)
     }
+
+    // </foo>
     val closetag = ( "<" ~ "/" ) ~> identifier <~ ">" ^^ {
         case identifier => Element(identifier)
     }
@@ -41,7 +49,7 @@ object XMLParser extends RegexParsers {
 object SimpleXML {
     def main(args: Array[String]) {
         val goodXML = """<test attr = "this is another test" test2="I wonder if escaped \"quotes\" work">
-                        |  <foo />
+                        |  <foo attr="val" attr2="escaped \"quotes\"" />
                         |  <bar>
                         |    <baz attr="this is a test" />
                         |  </bar>
