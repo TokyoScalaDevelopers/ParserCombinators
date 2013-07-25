@@ -18,13 +18,27 @@ object XMLParser extends RegexParsers {
         case identifier => Element(identifier)
     }
 
-    val element: Parser[Any] = selfclosingtag | ( opentag ~ element ~ closetag )
+    val container: Parser[Element] = ( opentag ~ rep(element) ~ closetag ) ^^ {
+        case opentag ~ contents ~ closetag if opentag.tag == closetag.tag => opentag.copy(content=contents)
+        case _ => sys.error("Unable to continue, probably malformed XML")
+    }
+
+    val element = selfclosingtag | container
 
     def handleString(xml: String) = parseAll(element, xml)
 }
 
 object SimpleXML {
     def main(args: Array[String]) {
-        println(XMLParser.handleString("<test><foo /></blah>"))
+        val goodXML = """<test>
+                        |  <foo />
+                        |  <bar>
+                        |    <baz />
+                        |  </bar>
+                        |</test>
+                        |""".stripMargin
+        println(XMLParser.handleString(goodXML))
+        // This will fail (yay!)
+        // println(XMLParser.handleString("<test><foo /></blah>"))
     }
 }
