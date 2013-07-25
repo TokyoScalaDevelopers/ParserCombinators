@@ -40,15 +40,18 @@ object XMLParser extends RegexParsers {
 
 object SimpleXML {
     def main(args: Array[String]) {
-        val goodXML = """<test>
+        val goodXML = """<test attr = "this is another test" test2="I wonder if escaped \"quotes\" work">
                         |  <foo />
                         |  <bar>
-                        |    <baz />
+                        |    <baz attr="this is a test" />
                         |  </bar>
                         |</test>
                         |""".stripMargin
+        val badXML =  """<test>
+                        |   <foo />
+                        |</blah>
+                        |""".stripMargin
+
         println(XMLParser.handleString(goodXML))
-        // This will fail (yay!)
-        // println(XMLParser.handleString("<test><foo /></blah>"))
     }
 }
