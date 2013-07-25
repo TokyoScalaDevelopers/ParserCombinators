@@ -6,13 +6,23 @@ case class Element(tag: String, attrs: Map[String, String] = Map(), content: Lis
 
 object XMLParser extends RegexParsers {
     val identifier = "[a-zA-Z0-9]+".r
-    val attributes = "foo=\"bar\""
 
-    val selfclosingtag = "<" ~> (identifier ~ rep(attributes)) <~ ( "/" ~ ">") ^^ {
-        case identifier ~ attributes => Element(identifier)
+    val escapedString = "\"" ~> rep("\\\\\"\\s*".r | "\\\\\\s*".r | "[^\\\\\"]+\\s*".r) <~ "\"" ^^ {
+        case contents => contents.mkString
     }
-    val opentag =  "<" ~> (identifier ~ rep(attributes)) <~ ">" ^^ {
-        case identifier ~ attributes => Element(identifier)
+    val attribute = identifier ~ "=" ~ ( "[0-9]+".r | escapedString ) ^^ {
+        case key ~ "=" ~ value => (key, value)
+    }
+
+    val attributes = rep(attribute) ^^ {
+        case attrs => attrs.toMap
+    }
+
+    val selfclosingtag = "<" ~> (identifier ~ attributes) <~ ( "/" ~ ">") ^^ {
+        case identifier ~ attrs => Element(identifier, attrs)
+    }
+    val opentag =  "<" ~> (identifier ~ attributes) <~ ">" ^^ {
+        case identifier ~ attrs => Element(identifier, attrs)
     }
     val closetag = ( "<" ~ "/" ) ~> identifier <~ ">" ^^ {
         case identifier => Element(identifier)
