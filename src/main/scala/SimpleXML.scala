@@ -5,7 +5,7 @@ import scala.util.parsing.combinator.RegexParsers
 case class Element(tag: String, attrs: Map[String, String] = Map(), content: List[Element] = List())
 
 object XMLParser extends RegexParsers {
-    val identifier = "test"
+    val identifier = "[a-zA-Z0-9]+".r
     val attributes = "foo=\"bar\""
 
     val selfclosingtag = "<" ~> (identifier ~ rep(attributes)) <~ ( "/" ~ ">") ^^ {
@@ -25,6 +25,6 @@ object XMLParser extends RegexParsers {
 
 object SimpleXML {
     def main(args: Array[String]) {
-        println(XMLParser.handleString("<test><test / ></test>"))
+        println(XMLParser.handleString("<test><foo /></blah>"))
     }
 }
