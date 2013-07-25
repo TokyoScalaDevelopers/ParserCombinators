@@ -43,23 +43,8 @@ object XMLParser extends RegexParsers {
 
     val element = selfclosingtag | container
 
-    def handleString(xml: String) = parseAll(element, xml)
-}
-
-object SimpleXML {
-    def main(args: Array[String]) {
-        val goodXML = """<test attr = "this is another test" test2="I wonder if escaped \"quotes\" work">
-                        |  <foo attr="val" attr2="escaped \"quotes\"" />
-                        |  <bar>
-                        |    <baz attr="this is a test" />
-                        |  </bar>
-                        |</test>
-                        |""".stripMargin
-        val badXML =  """<test>
-                        |   <foo />
-                        |</blah>
-                        |""".stripMargin
-
-        println(XMLParser.handleString(goodXML))
+    def handleString(xml: String) = parseAll(element, xml) match {
+        case Success(result, _) => result
+        case Failure(msg, _) => sys.error(msg)
     }
 }
