@@ -34,7 +34,7 @@ object XMLParser extends RegexParsers {
     val escapedString = "\"" ~> rep("\\\\\"\\s*".r | "\\\\\\s*".r | "[^\\\\\"]+\\s*".r) <~ "\"" ^^ {
         case contents => contents.mkString
     }
-    val attribute = identifier ~ "=" ~ ( "[0-9]+".r | escapedString ) ^^ {
+    val attribute = identifier ~ "=" ~ ( "[0-9]+".r | "[a-zA-Z0-9]+".r | escapedString ) ^^ {
         case key ~ "=" ~ value => (key, value)
     }
 

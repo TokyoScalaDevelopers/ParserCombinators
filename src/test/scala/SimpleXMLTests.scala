@@ -7,7 +7,7 @@ object SimpleXMLTests {
         val goodXML = """<test attr = "this is another test" test2="I wonder if escaped \"quotes\" work">
                         |  <foo attr="val" attr2="escaped \"quotes\"" />
                         |  <bar>
-                        |    <baz attr="this is a test" />
+                        |    <baz attr="this is a test" bareattr=noquotes number=12345 / >
                         |  </bar>
                         |</test>
                         |""".stripMargin
