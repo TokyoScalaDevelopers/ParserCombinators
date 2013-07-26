@@ -18,5 +18,7 @@ object SimpleXMLTests {
 
         val a: Element = XMLParser.handleString(goodXML)
         println(a)
+        println(a.flatten(pretty=true))
+        println(a.flatten(pretty=false))
     }
 }

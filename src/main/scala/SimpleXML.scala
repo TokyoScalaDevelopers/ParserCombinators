@@ -2,7 +2,28 @@ package se.hardchee.SimpleXML
 
 import scala.util.parsing.combinator.RegexParsers
 
-case class Element(tag: String, attrs: Map[String, String] = Map(), content: List[Element] = List())
+case class Element(tag: String, attrs: Map[String, String] = Map(), content: List[Element] = List()) {
+    def flatten(pretty: Boolean = true, depth: Int = 0): String = {
+        def flattenAttrs(attrs: Map[String, String]) = attrs.map { case (key, value) => key + "=" + "\"" + value + "\"" } mkString(" ")
+        def indent(s: String) = if(pretty) { "    " * depth + s } else { s }
+        def makeTag(tag: String, attrs: Map[String, String], selfClosing: Boolean = false) = {
+            val _attrs = if(attrs.isEmpty) { "" } else { " " + flattenAttrs(attrs) }
+            val _selfclosing = if(selfClosing) { " /" } else { "" }
+
+            "<%s%s%s>" format (tag, _attrs, _selfclosing)
+        }
+        def makeClosingTag(tag: String) = "</%s>" format tag
+
+        val newline = if(pretty) { "\n" } else { "" }
+        val flatContent = content.map { _.flatten(pretty=pretty, depth=depth + 1) } mkString(newline)
+
+        if(content.isEmpty) {
+            indent(makeTag(tag, attrs, selfClosing=true))
+        } else {
+            indent(makeTag(tag, attrs)) + newline + flatContent + newline + indent(makeClosingTag(tag))
+        }
+    }
+}
 
 // Here's our pretty basic XML parser! It supports nested elements, elements with attributes, and escaped quotes in attributes.
 // We heavily rely on the method ```implicit def regex(r: Regex): Parser[String]```, which converts all bare regular expressions
