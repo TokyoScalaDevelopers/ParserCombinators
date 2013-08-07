@@ -8,5 +8,7 @@ object CalculatorParserTest {
         println("Evaluating: " + expr)
         val parsed = CalculatorParser.parseExpression(expr)
         println(parsed)
+        val evaluated = CalculatorEvaluator.evaluate(parsed)
+        println(evaluated)
     }
 }

@@ -17,7 +17,6 @@ object CalculatorParser extends RegexParsers {
         case num => Number(num.toDouble)
     }
 
-
     val opMultiplyDivide = "[*/]".r ^^ { case op => Operator(op) }
     val opAddSubtract = "[+-]".r ^^ { case op => Operator(op) }
 
@@ -45,6 +44,42 @@ object CalculatorParser extends RegexParsers {
             case Success(r, _) => r
             case Failure(m, _) => sys.error("Unable to parse expression! " + m)
             case Error(e, _) => sys.error("Unable to parse expression! " + e)
+        }
+    }
+}
+
+object CalculatorEvaluator {
+    def evaluateOp(_lhs: Component, op: Operator, _rhs: Component): Option[Number] = {
+        for(lhs <- evaluate(_lhs);
+            rhs <- evaluate(_rhs)) yield {
+            (lhs, op, rhs) match {
+                case (Number(l), Operator("+"), Number(r)) => Number(l + r)
+                case (Number(l), Operator("-"), Number(r)) => Number(l - r)
+                case (Number(l), Operator("*"), Number(r)) => Number(l * r)
+                case (Number(l), Operator("/"), Number(r)) => Number(l / r)
+                case (_, Operator(o), _) => sys.error("Unable to handle operator %s.".format(o))
+            }
+        }
+    }
+
+    def evaluateList(xs: List[Component]): Option[Number] = {
+        // _work accepts a reversed list! Make sure to flip arguments to evaluate methods!
+        def _work(xs: List[Component]): Option[Number] = xs match {
+            case (lhs: Component) :: (op: Operator) :: (xs: List[Component]) => _work(xs) flatMap {
+                rhs => evaluateOp(rhs, op, lhs)
+            }
+            case (c: Component) :: Nil => evaluate(c)
+            case _ => None
+        }
+        _work(xs.reverse)
+    }
+
+    def evaluate(expression: Component): Option[Number] = {
+        expression match {
+            case Terms(xs) => evaluateList(xs)
+            case Factors(xs) => evaluateList(xs)
+            case x:Number => Some(x)
+            case x:Operator => None
         }
     }
 }
