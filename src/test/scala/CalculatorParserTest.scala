@@ -4,7 +4,9 @@ import se.hardchee.CalculatorParser._
 
 object CalculatorParserTest {
     def main(args: Array[String]) {
-        val parsed = CalculatorParser.parseExpression("1 - 2 + 3 * (4 + 5)")
+        val expr = "1 - 2 + 3 * (4 + 5)"
+        println("Evaluating: " + expr)
+        val parsed = CalculatorParser.parseExpression(expr)
         println(parsed)
     }
 }
