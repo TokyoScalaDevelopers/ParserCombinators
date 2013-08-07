@@ -3,12 +3,33 @@ package test.scala
 import se.hardchee.CalculatorParser._
 
 object CalculatorParserTest {
-    def main(args: Array[String]) {
-        val expr = "1 - 2 + 3 * (4 + 5)"
+    def parse(expr: String) = {
+        println("Parsing: " + expr)
+        CalculatorParser.parseExpression(expr)
+    }
+    def evaluate(expr: Component) = {
         println("Evaluating: " + expr)
-        val parsed = CalculatorParser.parseExpression(expr)
-        println(parsed)
-        val evaluated = CalculatorEvaluator.evaluate(parsed)
-        println(evaluated)
+        val r = CalculatorEvaluator.evaluate(expr)
+        println("Result: " + r)
+        r
+    }
+
+    def calc(arg: Any) = arg match {
+        case expr: String => evaluate(parse(expr))
+        case comp: Component => evaluate(comp)
+        case x => sys.error("Not sure how to calculate " + x)
+    }
+
+    def main(args: Array[String]) {
+        goodExpression
+        bogusExpression
+    }
+
+    def goodExpression {
+        calc("1 - 2 + 3 * (4 + 5)")
+    }
+
+    def bogusExpression {
+        calc(Terms(List( Number(1.0), Operator("*") )))
     }
 }
