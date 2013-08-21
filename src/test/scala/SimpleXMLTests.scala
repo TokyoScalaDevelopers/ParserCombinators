@@ -1,6 +1,6 @@
 package test.scala
 
-import se.hardchee.SimpleXML._
+import com.github.TokyoScalaDevelopers.SimpleXML._
 
 object SimpleXMLTests {
     def main(args: Array[String]) {

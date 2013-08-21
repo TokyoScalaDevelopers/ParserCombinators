@@ -1,6 +1,6 @@
 package test.scala
 
-import se.hardchee.CalculatorParser._
+import com.github.TokyoScalaDevelopers.CalculatorParser._
 
 object CalculatorParserTest {
     def parse(expr: String) = {

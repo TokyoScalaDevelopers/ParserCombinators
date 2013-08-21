@@ -1,4 +1,4 @@
-package se.hardchee.CalculatorParser
+package com.github.TokyoScalaDevelopers.CalculatorParser
 
 import scala.util.parsing.combinator.RegexParsers
 

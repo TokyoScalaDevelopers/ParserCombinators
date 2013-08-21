@@ -1,4 +1,4 @@
-package se.hardchee.SimpleXML
+package com.github.TokyoScalaDevelopers.SimpleXML
 
 import scala.util.parsing.combinator.RegexParsers
 
