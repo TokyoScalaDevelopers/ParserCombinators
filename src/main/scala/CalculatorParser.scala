@@ -13,7 +13,7 @@ object CalculatorParser extends RegexParsers {
     import scala.language.implicitConversions
     implicit def stringToDouble(s: String): Number = Number(s.toDouble)
 
-    val number = "[1-9][0-9]*(?:.[0-9]+)?".r ^^ {
+    val number = "[0-9]+(?:.[0-9]+)?".r ^^ {
         case num => Number(num.toDouble)
     }
 
