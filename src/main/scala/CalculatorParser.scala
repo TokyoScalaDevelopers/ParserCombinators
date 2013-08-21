@@ -39,11 +39,11 @@ object CalculatorParser extends RegexParsers {
         case term ~ terms => Terms( term +: ( terms.flatten ) )
     }
 
-    def parseExpression(s: String) = {
+    def parseExpression(s: String): Option[Component] = {
         parseAll(expression, s) match {
-            case Success(r, _) => r
-            case Failure(m, _) => sys.error("Unable to parse expression! " + m)
-            case Error(e, _) => sys.error("Unable to parse expression! " + e)
+            case Success(r, _) => Some(r)
+            case Failure(m, _) => None
+            case Error(e, _) => None
         }
     }
 }

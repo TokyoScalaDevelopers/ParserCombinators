@@ -15,7 +15,7 @@ object CalculatorParserTest {
     }
 
     def calc(arg: Any) = arg match {
-        case expr: String => evaluate(parse(expr))
+        case expr: String => parse(expr).flatMap(evaluate)
         case comp: Component => evaluate(comp)
         case x => sys.error("Not sure how to calculate " + x)
     }
