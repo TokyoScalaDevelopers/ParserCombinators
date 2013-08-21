@@ -16,9 +16,10 @@ object SimpleXMLTests {
                         |</blah>
                         |""".stripMargin
 
-        val a: Element = XMLParser.handleString(goodXML)
-        println(a)
-        println(a.flatten(pretty=true))
-        println(a.flatten(pretty=false))
+        XMLParser.handleString(goodXML).map({ a: Element =>
+          println(a)
+          println(a.flatten(pretty=true))
+          println(a.flatten(pretty=false))
+        })
     }
 }

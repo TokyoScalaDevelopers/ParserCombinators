@@ -65,7 +65,8 @@ object XMLParser extends RegexParsers {
     val element = selfclosingtag | container
 
     def handleString(xml: String) = parseAll(element, xml) match {
-        case Success(result, _) => result
-        case Failure(msg, _) => sys.error(msg)
+        case Success(result, _) => Some(result)
+        case Failure(msg, _) => None
+        case Error(msg, _) => None
     }
 }
